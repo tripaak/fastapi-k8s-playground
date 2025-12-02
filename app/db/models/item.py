@@ -1,12 +1,17 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Integer, String, Text, DateTime, func
+# Objective: Define the SQL table and columns (SQLAlchemy FoodItem model).
+# Why: The model is the authoritative schema for how data is persisted in Postgres. It defines types, constraints (e.g., unique, nullable), indexes and primary keys.
+# Gotcha: Ensure DB column types map to your Pydantic types and consider constraints (unique name? case sensitivity?). Add indexes on frequently queried columns.
+
+
+
+from sqlalchemy import Column, Integer, String, Text, Float
 from app.db.base import Base
 
-class Item(Base):
-    __tablename__ = "items"
+class FoodItem(Base):
+    __tablename__ = "food_items"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(String(120), unique=True, index=True, nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, index=True)
+    calories = Column(Integer, nullable=True)
+    protien = Column(Float, nullable=True)
+    fat = Column(Float, nullable=True)
