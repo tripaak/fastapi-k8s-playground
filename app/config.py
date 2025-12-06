@@ -28,6 +28,9 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = True
 
+# @lru_cache: A decorator that caches the function's return value. The first time get_settings() is called, 
+# it creates a Settings object and stores it. 
+# Every subsequent call returns the cached object instead of creating a new one.
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
