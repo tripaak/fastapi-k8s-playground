@@ -19,8 +19,8 @@ add_middlewares(app)
 # Custom middleware
 app.middleware("http")(log_requests_middleware)
 
-# Include API routers
-app.include_router(api_router)
+# Include API routers (mount v1 router at configured prefix)
+app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health")

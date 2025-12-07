@@ -1,9 +1,12 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
 from app.config import get_settings
 
 settings = get_settings()
 
-engine = create_async_engine(
+# Using synchronous SQLAlchemy engine/session so existing sync services/controllers
+# that call `db.query(...)` work correctly.
+engine = create_engine(
     settings.DATABASE_URL,
     echo=False,
     future=True,
@@ -12,8 +15,11 @@ engine = create_async_engine(
     max_overflow=settings.DB_MAX_OVERFLOW,
 )
 
-SessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, class_=Session, expire_on_commit=False)
 
-async def get_db():
-    async with SessionLocal() as session:
-        yield session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
