@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment        # name of the deplyment object
+  namespace: nginx-namespace    # namespace where deployment will be created
+  labels:
+    app: nginx                  # label  for deployment object
+spec:                           # spec of deployment
+    replicas: 1
+    selector:                   # selector to identify pods managed by this deployment
+      matchLabels:
+        app: nginx              # this should be same as template.metadat.laebls.app
+    template:                   # this will put label app=fastapi to pods, template is pod template
+      metadata:
+        labels:
+           app: nginx
+      spec:                     # spec of pod
+        containers:
+          - name: nginx
+            image: nginx:alpine
+            ports:
+              - containerPort: 80
+
+
